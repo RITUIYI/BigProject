@@ -27,19 +27,20 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input type="email" class="form-control" name="title" id="inputEmail3" placeholder="文章标题">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <input type="file" id="exampleInputFile">
+                        <img style="height: 100px;" class="previewPic" src="" alt="">
+                        <input type="file" name="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
+                        <select name="categoryId" class="form-control">
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -53,7 +54,7 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" name="date" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -72,14 +73,42 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">发布</button>
-                        <button type="submit" class="btn btn-default">存为草稿</button>
+                        <button type="submit" class="btn btn_sendArt btn-success">发布</button>
+                        <button type="submit" class="btn brn_saveArt btn-default">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        $(function () {
+            $('#exampleInputFile').on('change', function () {
+                let icon = this.files[0];
+                let url = URL.createObjectURL(icon);
+                $('.previewPic').attr('src', url);
+            })
+            $('.btn_sendArt').on('click',function (e) {
+                e.preventDefault()
+                let fd = new FormData($('.article_form')[0]);
+                $.ajax({
+                    url: 'http://localhost:8080/admin/article/publish',
+                    type: 'post',
+                    contentType: false,
+                    processData: false,
+                    data: fd,
+                    success: (backData) => {
+                        // if(backData.code == 200) {
+                            alert('发表成功');
+                            window.location.href = './article_list.html';
+                        // } else {
 
+                        
+                    }
+                })
+            })
+
+        })
+    </script>
 </body>
 
 </html>

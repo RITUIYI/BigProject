@@ -111,20 +111,38 @@
                 window.parent.setMenu(1, 1);
             })
 
-            var key = decodeURI(window.location.search.split('=')[1]);
-            
-            $.ajax({
-                url: 'http://localhost:8080/admin/article/query',
-                data: {
-                    key: ''
-                },
-                success: (backData) => {
-                    console.log(backData);
-                    backData.data.key = key;
-                    let html_tbody = template('article_lists', backData.data);
-                    $('tbody').html(html_tbody);
+            // console.log(parent.$('.search_form>input'));
+
+
+            /* $('.search_form>input').on('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    alert('aa');
+                }
+            }) */
+            // var key = decodeURI(window.location.search.split('=')[1]);
+            let key = parent.$('.search_form>input').val().trim();
+            console.log(key);
+
+            parent.$('.search_form>input').on('keyup', function (e) {
+                if (e.keyCode == 13) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: 'http://localhost:8080/admin/article/query',
+                        data: {
+                            key: ''
+                        },
+                        success: (backData) => {
+                            console.log(backData);
+                            backData.data.key = key;
+                            let html_tbody = template('article_lists', backData.data);
+                            $('tbody').html(html_tbody);
+                        }
+                    })
                 }
             })
+
+
         })
     </script>
 

@@ -153,8 +153,7 @@
             //获取信息
             getuserInfo();
             let searchArt = () => {
-                let key = $('.search_form>input').val();
-                window.location.href = `./article_list.html?key=${key}`;
+                $('iframe').attr('src','./article_list.html');
             }
 
             //搜索文章
