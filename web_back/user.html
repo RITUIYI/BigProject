@@ -73,7 +73,7 @@
                     $('#inputEmail1').val(backData.data.username);
                     $('#inputEmail2').val(backData.data.nickname);
                     $('#inputEmail3').val(backData.data.email);
-                    $('.user_pic').attr('src',backData.data.userPic);
+                    $('.user_pic').attr('src', backData.data.userPic);
                     $('#inputEmail4').val(backData.data.password);
                 }
             })
@@ -88,17 +88,27 @@
                     contentType: false,
                     processData: false,
                     success: (backData) => {
-                        if(backData.code == 200) {
+                        if (backData.code == 200) {
+                            $.ajax({
+                                url: 'http://localhost:8080/admin/user/info',
+                                success: function (data) {
+                                    if (data.code == 200) {
+                                        console.log(parent.$('.user_info>img,.user_center_link>img'));
+                                        
+                                        parent.$('.user_info>img,.user_center_link>img').attr('src', data.data.userPic).siblings('span').html(`欢迎&nbsp;&nbsp;${data.data.nickname}`);
+                                    }
+                                }
+                            })
                             window.location.href = './main_count.html';
                         }
                     }
                 })
             })
 
-            $('#exampleInputFile').on('change',function() {
+            $('#exampleInputFile').on('change', function () {
                 let icon = this.files[0];
                 let url = URL.createObjectURL(icon);
-                $('.user_pic').attr('src',url);
+                $('.user_pic').attr('src', url);
             })
         })
     </script>

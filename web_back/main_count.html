@@ -277,13 +277,14 @@
         $.ajax({
             url: 'http://localhost:8080/admin/data/category',
             success: (backData) => {
+                
+                console.log(backData.date);
                 for (let i = 0; i < backData.date.length; i++) {
                     oPieopt.legend.data[i] = backData.date[i].name;//获取标题数据
                     oPieopt.series[0].data[i] = backData.date[i];//获取各类文章具体数据
                     oPieopt.series[0].data[i].name = backData.date[i].name;//获取文章类型名
                     oPieopt.series[0].data[i].value = backData.date[i].articles;//获取,每类文章数量
                     oPieopt.color[i] = randomColor();//设置随机颜色
-                    
                 }
                 console.log(oPieopt);
                 

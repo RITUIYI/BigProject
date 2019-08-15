@@ -107,6 +107,11 @@
     <script>
         $(function () {
             // 设置左侧菜单
+            // let str = '%0D%0A%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD';
+            // console.log();
+            // console.log(decodeURI(`#${str.split('%').join('')}`));
+            
+
             $('#release_btn').click(function () {
                 window.parent.setMenu(1, 1);
             })
@@ -121,8 +126,8 @@
                 }
             }) */
             // var key = decodeURI(window.location.search.split('=')[1]);
-            let key = parent.$('.search_form>input').val().trim();
-            console.log(key);
+            // let key = parent.$('.search_form>input').val().trim();
+            // console.log(key);
 
             parent.$('.search_form>input').on('keyup', function (e) {
                 if (e.keyCode == 13) {
