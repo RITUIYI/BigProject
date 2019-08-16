@@ -277,7 +277,6 @@
         $.ajax({
             url: 'http://localhost:8080/admin/data/category',
             success: (backData) => {
-                
                 console.log(backData.date);
                 for (let i = 0; i < backData.date.length; i++) {
                     oPieopt.legend.data[i] = backData.date[i].name;//获取标题数据

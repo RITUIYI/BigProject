@@ -66,15 +66,15 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" id="rich_content" name="content" placeholder="文章内容">
+                        <textarea class="form-control" id="rich_content" placeholder="文章内容">
                             Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
                             </textarea>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn_sendArt btn-success">发布</button>
-                        <button type="submit" class="btn brn_saveArt btn-default">存为草稿</button>
+                        <button type="submit" name="state" class="btn btn_sendArt btn-success">发布</button>
+                        <button type="submit" name='state' class="btn brn_saveArt btn-default">存为草稿</button>
                     </div>
                 </div>
             </form>
@@ -87,9 +87,12 @@
                 let url = URL.createObjectURL(icon);
                 $('.previewPic').attr('src', url);
             })
-            $('.btn_sendArt').on('click',function (e) {
+            $('.btn_sendArt').on('click', function (e) {
                 e.preventDefault()
                 let fd = new FormData($('.article_form')[0]);
+                let content = tinyMCE.activeEditor.getContent();
+                fd.append('content',content);
+
                 $.ajax({
                     url: 'http://localhost:8080/admin/article/publish',
                     type: 'post',
@@ -98,11 +101,11 @@
                     data: fd,
                     success: (backData) => {
                         // if(backData.code == 200) {
-                            alert('发表成功');
-                            window.location.href = './article_list.html';
+                        alert('发表成功');
+                        window.location.href = './article_list.html';
                         // } else {
 
-                        
+
                     }
                 })
             })

@@ -14,6 +14,7 @@
     <script src="js/jquery-1.12.4.min.js"></script>
     <script src="js/jedate/js/jedate.js"></script>
     <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="./js/template-web.js"></script>
     <script src="js/tinymce/js/tinymce_setup.js"></script>
 </head>
 
@@ -25,36 +26,38 @@
         <div class="container-fluid common_con">
             <form class="form-horizontal article_form">
                 <div class="form-group">
+                    <!-- <input type="text" name="id" value="1" style="display: none" class="id_input"> -->
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" value="文章标题文字">
+                        <input type="text" class="form-control title" name="title" id="inputEmail3" value="文章标题文字">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
                         <img src="images/pic06.jpg" class="article_cover">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" name="cover" class="cover" id="exampleInputFile">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>类别一</option>
-                            <option>类别二</option>
-                            <option>类别三</option>
-                            <option selected>类别四</option>
-                            <option>类别五</option>
+                        <select name="categoryId" class="form-control categoryld">
+                            <option value="1">1</option>
+                            <option value='2'>2</option>
+                            <option value='3'>3</option>
+                            <option value='4' selected>4</option>
+                            <option value='5'>5</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
+                    <label for="inputEmail3" class="col-sm-2 date control-label">发布时间：</label>
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" value="2019-05-17" id="dateinput">
+                            <input type="text" name="date" class="form-control send_date" value="2019-05-17"
+                                id="dateinput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -66,18 +69,91 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="rich_content" name="content" placeholder="文章内容" value="文章内容">
+                        <input type="text" class="form-control text_content" id="rich_content" name="content"
+                            placeholder="文章内容" value="文章内容">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <button type="submit" class="btn btn_edit btn-success">修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <!-- 分类模板 -->
+    <script id="classList" type="text/html">
+        {{each data v}}
+        <option value="{{v.id}}">{{v.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        $(function () {
+            //通过 sessionLocalStore 获取 文章id
+            let id = window.sessionStorage.getItem('id');
+            let host = 'http://localhost:8080';
 
+            //获取全部分类信息 并渲染到页面中
+            $.ajax({
+                url: 'http://localhost:8080/admin/category/list',
+                success: (backData) => {
+                    let html = template('classList', backData);
+                    $('.categoryld').html(html);
+                }
+            })
+            //根据id 获取文章的详细信息  
+            $.ajax({
+                url: host + '/admin/article/search',
+                data: {
+                    id: id
+                },
+                success: (backData) => {
+                    console.log(backData);
+                    //渲染文章信息到页面
+                    // $('.id_input').val(id);
+                    $('.title').val(backData.data.title);
+                    $('.article_cover').attr('src', backData.data.cover);
+                    $('.send_date').val(backData.data.date);
+                    $('.text_content').val(backData.data.content);
+                    $('.categoryld').val(backData.data.categoryId);
+                }
+            })
+
+            //封面预览
+            $('input.cover').on('change', () => {
+                let icon = $('input.cover')[0].files[0];
+                let url = URL.createObjectURL(icon);
+                $('.article_cover').attr('src', url);
+            })
+            //文章编辑需求的实现
+            $('.btn_edit').on('click', (e) => {
+                e.preventDefault();
+                let fd = new FormData($('form')[0]);
+                fd.append('id', id);
+                // let content = tinyMCE.activeEditor.getContent();
+                // fd.append('content', content);
+                console.log(fd.get('content'));
+
+                $.ajax({
+                    url: 'http://localhost:8080/admin/article/edit',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: (backData) => {
+                        if (backData.code == 200) {
+                            alert('修改成功');
+                            window.location.href = './article_list.html';
+
+                        } else {
+                            alert('修改失败')
+                        }
+                    }
+                })
+            })
+
+        })
+    </script>
 </body>
 
 </html>
