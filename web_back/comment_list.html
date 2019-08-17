@@ -183,10 +183,10 @@
       $('#release_btn').click(function () {
         window.parent.setMenu(0, 0);
       })
+      let host = 'http://localhost:8080';
 
       $.ajax({
-        url: 'http://localhost:8080/admin/comment_search',
-        type: 'get',
+        url: host + '/admin/comment_search',
         data: {
           page: 1,
           perpage: 10
