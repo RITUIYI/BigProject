@@ -15,7 +15,7 @@
 
 <body>
     <div class="header">
-        <a href="#" class="logo fl"><img src="images/logo.png" alt="logo"></a>
+        <a href="./index.html" class="logo fl"><img src="images/logo.png" alt="logo"></a>
         <div class="search_form fl">
             <input type="text" class="search_txt" placeholder="黑洞照片">
             <button class="search_btn"><i class="fa fa-search"></i></button>
@@ -249,7 +249,7 @@
     <script id="class_dropDown" type="text/html">
         <li class="up"></li>
         {{each data v}}
-        <li><a href="#">{{v.name}}</a></li>
+        <li><a href="#" class_id = '{{v.id}}' class='drop_class'>{{v.name}}</a></li>
         {{/each}}
     </script>
     <!-- 一周热门模板 -->
@@ -287,7 +287,8 @@
     <script>
         $(function () {
             let host = 'http://localhost:8080';
-            let id = window.sessionStorage.getItem('id');
+            //文章列表跳转事件
+            id = window.location.search.split('=')[1];
             let lastArt;
             let nextArt;
             //进入页面 获取文章分类 并渲染到页面中
@@ -475,6 +476,26 @@
                 getArticle();
                 getComment();
             }) */
+
+
+            //点击分类跳转事件
+            let dropclass_art = document.getElementsByClassName('level_two')[0];
+            let class_list = document.getElementsByClassName('left_menu')[0];
+            dropclass_art.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.target.className == 'drop_class') {
+                    let id = e.target.getAttribute('class_id');
+                    window.location.href = './list.html?id=' + id;
+                }
+            })
+            class_list.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.target.className == 'drop_class') {
+                    let id = e.target.getAttribute('class_id');
+                    window.location.href = './list.html?id=' + id;
+                }
+            })
+
         })
     </script>
 </body>

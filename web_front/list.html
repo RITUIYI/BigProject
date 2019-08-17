@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div id="pagination" class="page"></div>
+            <div id="pagination" style="height: 30px" class="page"></div>
 
         </div>
         <div class="right_con setfl">
@@ -166,7 +166,7 @@
             <h4><a href="#">{{v.title}} </a></h4>
             <p>{{v.content}}</p>
             <div class="new_info">
-                <span>标签：{{v.catagory}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{v.read}} )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{v.comments}} )</span>
+                <span>标签：{{v.category}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i class="fa fa-eye"></i>&nbsp;阅读( {{v.read}} )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{v.comments}} )</span>
                 <b>发布于 {{v.date}} 12:18:58</b>
             </div>
         </div>
@@ -177,7 +177,7 @@
     <script id="class_dropDown" type="text/html">
         <li class="up"></li>
         {{each data v}}
-        <li><a href="#">{{v.name}}</a></li>
+        <li><a href="#" class_id = '{{v.id}}' class='drop_class'>{{v.name}}</a></li>
         {{/each}}
     </script>
     <!-- 一周热门模板 -->
@@ -217,6 +217,7 @@
 
             let totalPages;
             let host = 'http://localhost:8080';
+            let last = 22;
             let data = { key: '', type: '', page: 1, perpage: 10 };
             data.key = window.sessionStorage.getItem('key');
 
@@ -279,15 +280,13 @@ backData.data[i].month = month;
                 }
             })
             //文章搜索
-            var getArticle = (data) => {
+            var getArticle = (obj) => {
                 $.ajax({
                     url: host + '/index/search',
-                    data: data,
+                    data: obj,
                     success: (backData) => {
-                        let last = totalPages;
+                        last = totalPages;
                         totalPages = Math.ceil(backData.data.totalCount / data.perpage);
-                        console.log(totalPages);
-
                         let html_articleList = template('article_list', backData.data);
                         $('.article_list').html(html_articleList);
 
@@ -307,9 +306,8 @@ backData.data[i].month = month;
                     }
                 })
             }
-            //通过首页搜索跳转
-            getArticle(data);
 
+            //文章搜索
             $('.search_btn').on('click', (e) => {
                 e.preventDefault();
                 data.key = $('.search_txt').val();
@@ -321,7 +319,45 @@ backData.data[i].month = month;
                     getArticle(data);
                 }
             })
+            //首页点击分类跳转
+            let id = window.location.search.split('=')[1];
+            data.type = id;
+            //通过首页搜索跳转
+            getArticle(data);
 
+
+            //点击分类搜索文章
+            let dropclass_art = document.getElementsByClassName('level_two')[0];
+            let class_list = document.getElementsByClassName('left_menu')[0];
+            dropclass_art.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.target.className == 'drop_class') {
+                    let id = e.target.getAttribute('class_id');
+                    data.type = id;
+                    getArticle(data);
+                }
+            })
+            class_list.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.target.className == 'drop_class') {
+                    let id = e.target.getAttribute('class_id');
+                    data.type = id;
+                    getArticle(data);
+                }
+            })
+
+            //点击文章进入文章详情页
+            let article = document.getElementsByClassName('article_list')[0];
+            article.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(e.target);
+                
+                if (e.target.className == 'common_news_list') {
+                    let id = e.target.getAttribute('article_Id');
+                    console.log(id);
+                    window.location.href = './article.html?id=' + id;
+                }
+            })
         })
 
     </script>
